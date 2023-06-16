@@ -1,0 +1,22 @@
+definitions:
+    steps:
+        - step: &release
+              name: Release to Dockerhub
+              services:
+                  - docker
+              script:
+                  - docker --version
+                  - docker login --username="${DOCKER_USERNAME}" --password="${DOCKER_PASSWORD}"
+                  - cypress_version=12.12.0
+                  - namespace=<your_dockerhub_username>
+                  - repository=04_push_image_dockerhub
+                  - git add -A
+                  - git tag -a "$cypress_version" --message "version $cypress_version" --force
+                  - git push --tags --force
+                  - docker build --build-arg CYPRESS=$cypress_version --tag $namespace/$repository:latest --tag $namespace/$repository:$version .
+                  - docker push $namespace/$repository:$cypress_version
+                  - docker push $namespace/$repository:latest
+
+pipelines:
+    default:
+        - step: *release

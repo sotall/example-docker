@@ -1,0 +1,12 @@
+version: '3.2'
+services:
+    cypress:
+        image: 'cypress/included:12.12.0'
+        container_name: 03_docker-compose
+        working_dir: /cypress
+        volumes:
+            - ./:/cypress
+        command:
+            [
+                "cypress run --config-file cypress.config.js --spec example.cy.js"
+            ]
